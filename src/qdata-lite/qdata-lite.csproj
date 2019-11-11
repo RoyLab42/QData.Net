@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>RoyLab.QData.Lite</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <!--  NuGet package version  -->
+    <PackageVersion>1.0.0</PackageVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <AssemblyName>RoyLab.QData.Lite</AssemblyName>
+    <PackageId>RoyLab.QData.Lite</PackageId>
+    <Authors>Ruolin Zhang</Authors>
+    <PackageProjectUrl>https://ruolinz.com/QDataLite</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Emit" Version="4.6.0" />
+  </ItemGroup>
+
+</Project>
