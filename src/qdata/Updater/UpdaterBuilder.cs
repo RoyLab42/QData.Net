@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using RoyLab.QData.Converters.ExpressionTrees;
 using RoyLab.QData.Updater.Expressions;
 
 namespace RoyLab.QData.Updater
@@ -28,8 +29,10 @@ namespace RoyLab.QData.Updater
                 parameters[i] = Expression.Parameter(typeof(string));
             }
 
+            var visitor = new ExpressionTreesExpressionVisitor(parameters);
+
             var body = Expression.Block(assignExpressions
-                .Select(ae => ae.ToLinqExpression(parameters))
+                .Select(ae => ae.Accept<Expression>(visitor))
                 .Where(e => e != null));
 
             return Expression.Lambda(Expression.Block(body, Expression.Empty()), parameters);

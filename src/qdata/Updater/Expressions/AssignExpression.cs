@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Linq.Expressions;
 using RoyLab.QData.Interfaces;
 
 namespace RoyLab.QData.Updater.Expressions
@@ -25,27 +22,9 @@ namespace RoyLab.QData.Updater.Expressions
             return $"{Variable}=_";
         }
 
-        public Expression ToLinqExpression(params ParameterExpression[] parameters)
+        public T Accept<T>(IExpressionVisitor<T> expressionVisitor)
         {
-            var source = parameters.First();
-            var (mt, me) = source.AccessPropertyOrMember(Variable);
-            if (mt == null || me == null)
-            {
-                return null;
-            }
-
-            Expression valueExpression = parameters[Index];
-            if (mt.IsEnum)
-            {
-                var underlyingExpression = TypeUtility.TryParse(valueExpression, Enum.GetUnderlyingType(mt));
-                valueExpression = Expression.Convert(underlyingExpression, mt);
-            }
-            else if (mt != typeof(string))
-            {
-                valueExpression = TypeUtility.TryParse(valueExpression, mt);
-            }
-
-            return Expression.Assign(me, valueExpression);
+            return expressionVisitor.VisitAndConvert(this);
         }
     }
 }

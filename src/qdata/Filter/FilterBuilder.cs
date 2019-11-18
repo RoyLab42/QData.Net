@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using RoyLab.QData.Converters.ExpressionTrees;
 using RoyLab.QData.Interfaces;
 
 namespace RoyLab.QData.Filter
@@ -20,7 +21,8 @@ namespace RoyLab.QData.Filter
             }
 
             var parameterExpression = Expression.Parameter(sourceType);
-            var expression = iExpression.ToLinqExpression(parameterExpression);
+            var visitor = new ExpressionTreesExpressionVisitor(parameterExpression);
+            var expression = iExpression.Accept(visitor);
             return expression == null ? null : Expression.Lambda(expression, parameterExpression);
         }
     }

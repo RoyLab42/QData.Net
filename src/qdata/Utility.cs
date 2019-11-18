@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using RoyLab.QData.Converters.ExpressionTrees;
 using RoyLab.QData.Filter;
 using RoyLab.QData.Selector;
 using RoyLab.QData.Updater;

@@ -1,9 +1,7 @@
-using System.Linq.Expressions;
-
 namespace RoyLab.QData.Interfaces
 {
     public interface IExpression
     {
-        Expression ToLinqExpression(params ParameterExpression[] parameters);
+        T Accept<T>(IExpressionVisitor<T> expressionVisitor);
     }
 }
