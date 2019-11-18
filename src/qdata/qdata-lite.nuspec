@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <!-- Required elements-->
+    <id>RoyLab.QData.Lite</id>
+    <version>1.1.0</version>
+    <description>QData.Net is a DotNet library that makes the data query more flexible.</description>
+    <authors>RoyLab</authors>
+
+    <!-- Optional elements -->
+    <owners>RoyLab</owners>
+    <projectUrl>https://ruolinz.com/QData</projectUrl>
+    <license type="expression">MIT</license>
+    <releaseNotes>
+      QData.Net will support flexible data query, in comparison with the hard-coded way. You don't need to specify the selector, filter and orderBy search criteria at compile time which makes code hard to maintain. Instead, the library will parse the query string you provided and convert them into the expression tree for execution at runtime. In addition, it also supports updating data model in a flexible way as well.
+      Click https://github.com/RoyLab42/QData.Net/issues/1 for more information.
+    </releaseNotes>
+    <repository type="git" url="https://github.com/RoyLab42/QData.Net.git" branch="master" commit="3ae6093625024da4beac3278c013cf12cf4842c3" />
+    <title>RoyLab.QData.Lite</title>
+  </metadata>
+  <!-- Optional 'files' node -->
+</package>
