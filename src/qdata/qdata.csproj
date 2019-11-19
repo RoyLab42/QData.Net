@@ -4,10 +4,22 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>RoyLab.QData</RootNamespace>
     <LangVersion>latest</LangVersion>
+
+    <!--  NuGet package version  -->
+    <PackageId>RoyLab.QData.Lite</PackageId>
+    <PackageVersion>1.1.1</PackageVersion>
+    <Authors>RoyLab</Authors>
+    <Description>QData.Net is a DotNet library that makes the data query more flexible.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://ruolinz.com/QData</PackageProjectUrl>
+    <!--  source related to this package  -->
+    <RepositoryUrl>https://github.com/RoyLab42/QData.Net.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryCommit>7317d9d433627e9d8b98da0f1427b4f89c67f3dd</RepositoryCommit>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Reflection.Emit" Version="4.6.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.6.0"/>
   </ItemGroup>
 
 </Project>
