@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Linq.Expressions;
 using RoyLab.QData.Interfaces;
 
 namespace RoyLab.QData.Filter.Expressions
@@ -21,17 +19,9 @@ namespace RoyLab.QData.Filter.Expressions
             return $"({Left}&&{Right})";
         }
 
-        public Expression ToLinqExpression(params ParameterExpression[] parameters)
+        public T Accept<T>(IExpressionVisitor<T> expressionVisitor)
         {
-            var source = parameters.First();
-            var leftExpression = Left.ToLinqExpression(source);
-            var rightExpression = Right.ToLinqExpression(source);
-            if (leftExpression == null || rightExpression == null)
-            {
-                return null;
-            }
-
-            return Expression.And(leftExpression, rightExpression);
+            return expressionVisitor.VisitAndConvert(this);
         }
     }
 }

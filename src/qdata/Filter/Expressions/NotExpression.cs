@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Linq.Expressions;
 using RoyLab.QData.Interfaces;
 
 namespace RoyLab.QData.Filter.Expressions
@@ -18,10 +16,9 @@ namespace RoyLab.QData.Filter.Expressions
             return $"(!{Single})";
         }
 
-        public Expression ToLinqExpression(params ParameterExpression[] parameters)
+        public T Accept<T>(IExpressionVisitor<T> expressionVisitor)
         {
-            var expression = Single.ToLinqExpression(parameters.First());
-            return expression == null ? null : Expression.Not(expression);
+            return expressionVisitor.VisitAndConvert(this);
         }
     }
 }

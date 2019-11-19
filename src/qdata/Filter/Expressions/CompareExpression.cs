@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Linq.Expressions;
 using RoyLab.QData.Interfaces;
 
 namespace RoyLab.QData.Filter.Expressions
@@ -37,35 +34,9 @@ namespace RoyLab.QData.Filter.Expressions
             return $"({variable}_{operation}_)";
         }
 
-        public Expression ToLinqExpression(params ParameterExpression[] parameters)
+        public T Accept<T>(IExpressionVisitor<T> expressionVisitor)
         {
-            var source = parameters.First();
-            var (memberType, memberExpression) = source.AccessPropertyOrMember(variable);
-            if (memberType == null || memberExpression == null)
-            {
-                return null;
-            }
-
-            Expression valueExpression = Expression.Constant(value);
-            if (memberType.IsEnum)
-            {
-                var underlyingExpression = TypeUtility.ParseString(valueExpression, Enum.GetUnderlyingType(memberType));
-                valueExpression = Expression.Convert(underlyingExpression, memberType);
-            }
-            else if (memberType != typeof(string))
-            {
-                valueExpression = TypeUtility.ParseString(valueExpression, memberType);
-            }
-
-            return operation switch
-            {
-                Operation.Eq => Expression.Equal(memberExpression, valueExpression),
-                Operation.Ge => Expression.GreaterThanOrEqual(memberExpression, valueExpression),
-                Operation.Gt => Expression.GreaterThan(memberExpression, valueExpression),
-                Operation.Le => Expression.LessThanOrEqual(memberExpression, valueExpression),
-                Operation.Lt => Expression.LessThan(memberExpression, valueExpression),
-                _ => null
-            };
+            return expressionVisitor.VisitAndConvert(this);
         }
     }
 }

@@ -2,9 +2,9 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace RoyLab.QData
+namespace RoyLab.QData.Converters.ExpressionTrees
 {
-    public static class ExpressionUtility
+    internal static class ExpressionUtility
     {
         /// <summary>
         /// access property or member of parameterExpression with the give property name or member name
