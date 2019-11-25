@@ -82,18 +82,15 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
-            var castMethod = typeof(Enumerable).GetMethod("Cast")?.MakeGenericMethod(memberType);
-            if (castMethod == null)
+            object ParseValue(string valueString)
             {
-                return null;
+                return memberType.IsEnum
+                    ? Enum.ToObject(memberType, Convert.ChangeType(valueString, Enum.GetUnderlyingType(memberType)))
+                    : Convert.ChangeType(valueString, memberType);
             }
 
-            var valueExpression =
-                Expression.Call(castMethod,
-                    Expression.Constant(inExpression.ValueList.Select(v => Convert.ChangeType(v,
-                        memberType.IsEnum
-                            ? Enum.GetUnderlyingType(memberType)
-                            : memberType))));
+            var valueExpression = Expression.NewArrayInit(memberType,
+                inExpression.ValueList.Select(v => Expression.Constant(ParseValue(v))));
 
             var containsMethod = typeof(Enumerable).GetMethods()
                 .FirstOrDefault(mi => mi.Name == "Contains" && mi.GetParameters().Length == 2)
