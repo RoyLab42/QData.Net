@@ -235,12 +235,12 @@ namespace RoyLab.QData.Filter
                         }
 
                         i = j;
-                        while (j < queryString.Length && queryString[j] != ' ' && queryString[j] != ')')
+                        while (j < queryString.Length && queryString[j] != ')')
                         {
                             j++;
                         }
 
-                        var value = queryString[i..j].ToString();
+                        var value = queryString[i..j].Trim().ToString();
                         expression = new CompareExpression(variable, value, operation);
                         return queryString[j..];
                     }

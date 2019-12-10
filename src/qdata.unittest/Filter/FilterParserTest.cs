@@ -4,7 +4,7 @@ using RoyLab.QData.Filter.Expressions;
 
 namespace RoyLab.QData.Filter
 {
-    internal class TestFilterParser
+    internal class FilterParserTest
     {
         [Test]
         public void TestBasic()
@@ -17,6 +17,12 @@ namespace RoyLab.QData.Filter
             success = FilterParser.TryParse("   ", out parsedExpression, out remaining);
             Assert.IsTrue(success);
             Assert.IsNull(parsedExpression);
+            Assert.IsTrue(remaining.IsEmpty);
+
+            success = FilterParser.TryParse("&(ReportType=1)(DueDate=9/23/2019 12:00:00 AM)",
+                out parsedExpression, out remaining);
+            Assert.IsTrue(success);
+            Assert.IsNotNull(parsedExpression);
             Assert.IsTrue(remaining.IsEmpty);
 
             success = FilterParser.TryParse("()", out parsedExpression, out remaining);

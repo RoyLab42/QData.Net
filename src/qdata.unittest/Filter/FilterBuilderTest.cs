@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace RoyLab.QData.Filter
 {
-    public class TestFilterBuilder
+    public class FilterBuilderTest
     {
         [Test]
         public void TestExpression()
@@ -68,6 +68,17 @@ namespace RoyLab.QData.Filter
             Assert.IsNotNull(filterFunction);
             Assert.IsTrue(filterFunction(new User {Location = Location.NewYork}));
             Assert.IsFalse(filterFunction(new User {Location = Location.SanFrancisco}));
+
+            lambdaExpression = FilterParser.Parse("&(BirthDay=5/22/2015 12:00:00 PM)(Age<18)").Build(typeof(User));
+            function = lambdaExpression?.Compile();
+            Assert.IsInstanceOf<Func<User, bool>>(function);
+            filterFunction = function as Func<User, bool>;
+            Assert.IsNotNull(filterFunction);
+            Assert.IsTrue(filterFunction(new User
+            {
+                BirthDay = new DateTime(2015, 5, 22, 12, 0, 0),
+                Age = 5
+            }));
         }
 
         [Test]
