@@ -79,6 +79,27 @@ namespace RoyLab.QData.Filter
                 BirthDay = new DateTime(2015, 5, 22, 12, 0, 0),
                 Age = 5
             }));
+
+            lambdaExpression = FilterParser.Parse("UserID=9b4959dc-45b4-45c7-8e6d-536bc770ace0").Build(typeof(User));
+            function = lambdaExpression?.Compile();
+            Assert.IsInstanceOf<Func<User, bool>>(function);
+            filterFunction = function as Func<User, bool>;
+            Assert.IsNotNull(filterFunction);
+            Assert.IsTrue(filterFunction(new User {UserID = Guid.Parse("9b4959dc-45b4-45c7-8e6d-536bc770ace0")}));
+            Assert.IsFalse(filterFunction(new User()));
+        }
+
+        [Test]
+        public void TestInExpression()
+        {
+            var lambdaExpression = FilterParser.Parse("UserID in [9b4959dc-45b4-45c7-8e6d-536bc770ace0]")
+                .Build(typeof(User));
+            var function = lambdaExpression.Compile();
+            var filterFunction = function as Func<User, bool>;
+            Assert.IsNotNull(filterFunction);
+
+            Assert.IsTrue(filterFunction(new User {UserID = Guid.Parse("9b4959dc-45b4-45c7-8e6d-536bc770ace0")}));
+            Assert.IsFalse(filterFunction(new User()));
         }
 
         [Test]

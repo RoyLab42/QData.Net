@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Linq.Expressions;
 using RoyLab.QData.Filter.Expressions;
@@ -7,7 +6,7 @@ using RoyLab.QData.Updater.Expressions;
 
 namespace RoyLab.QData.Converters.ExpressionTrees
 {
-    public class ExpressionTreesExpressionVisitor : IExpressionVisitor<Expression>
+    internal class ExpressionTreesExpressionVisitor : IExpressionVisitor<Expression>
     {
         private readonly ParameterExpression[] parameters;
 
@@ -51,16 +50,7 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
-            Expression valueExpression = Expression.Constant(compareExpression.Value);
-            if (memberType.IsEnum)
-            {
-                var underlyingExpression = TypeUtility.ParseString(valueExpression, Enum.GetUnderlyingType(memberType));
-                valueExpression = Expression.Convert(underlyingExpression, memberType);
-            }
-            else if (memberType != typeof(string))
-            {
-                valueExpression = TypeUtility.ParseString(valueExpression, memberType);
-            }
+            var valueExpression = TypeUtility.Parse(Expression.Constant(compareExpression.Value), memberType);
 
             return compareExpression.Operation switch
             {
@@ -82,20 +72,15 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
-            object ParseValue(string valueString)
-            {
-                return memberType.IsEnum
-                    ? Enum.ToObject(memberType, Convert.ChangeType(valueString, Enum.GetUnderlyingType(memberType)))
-                    : Convert.ChangeType(valueString, memberType);
-            }
-
-            var valueExpression = Expression.NewArrayInit(memberType,
-                inExpression.ValueList.Select(v => Expression.Constant(ParseValue(v))));
+            var valueArrayExpression = Expression.NewArrayInit(memberType,
+                inExpression.ValueList.Select(v => TypeUtility.Parse(Expression.Constant(v), memberType)));
 
             var containsMethod = typeof(Enumerable).GetMethods()
                 .FirstOrDefault(mi => mi.Name == "Contains" && mi.GetParameters().Length == 2)
                 ?.MakeGenericMethod(memberType);
-            return containsMethod == null ? null : Expression.Call(containsMethod, valueExpression, memberExpression);
+            return containsMethod == null
+                ? null
+                : Expression.Call(containsMethod, valueArrayExpression, memberExpression);
         }
 
         private Expression VisitAndConvert(NotExpression notExpression)
@@ -125,18 +110,7 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
-            Expression valueExpression = parameters[assignExpression.Index];
-            if (mt.IsEnum)
-            {
-                var underlyingExpression = TypeUtility.TryParse(valueExpression, Enum.GetUnderlyingType(mt));
-                valueExpression = Expression.Convert(underlyingExpression, mt);
-            }
-            else if (mt != typeof(string))
-            {
-                valueExpression = TypeUtility.TryParse(valueExpression, mt);
-            }
-
-            return Expression.Assign(me, valueExpression);
+            return Expression.Assign(me, TypeUtility.TryParse(parameters[assignExpression.Index], mt));
         }
     }
 }

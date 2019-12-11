@@ -10,5 +10,6 @@ namespace RoyLab.QData
         public Location Location { get; set; }
         public string Name { get; set; }
         public DateTime? ParentalDay { get; set; }
+        public Guid UserID { get; set; }
     }
 }
