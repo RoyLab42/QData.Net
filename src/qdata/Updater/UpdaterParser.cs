@@ -95,9 +95,7 @@ namespace RoyLab.QData.Updater
                 }
 
                 assignExpressions.Add(new AssignExpression(variable.ToString(), index++));
-                values.Add(value.ToString()
-                    .Replace(@"\\", @"\")
-                    .Replace(@"\;", ";"));
+                values.Add(Utility.UnescapeUpdaterField(value.ToString()));
             }
 
             valueArray = values.ToArray();

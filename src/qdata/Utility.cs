@@ -17,6 +17,13 @@ namespace RoyLab.QData
         private static readonly ConcurrentDictionary<string, Delegate> updateFunctions =
             new ConcurrentDictionary<string, Delegate>();
 
+        public static string EscapeUpdaterField(string content)
+        {
+            return content?
+                .Replace(@"\", @"\\")
+                .Replace(@";", @"\;");
+        }
+
         /// <summary>
         /// selector: Name,Age,Location
         /// orderBy:
@@ -122,6 +129,13 @@ namespace RoyLab.QData
             }
 
             return true;
+        }
+
+        internal static string UnescapeUpdaterField(string escapedContent)
+        {
+            return escapedContent?
+                .Replace(@"\\", @"\")
+                .Replace(@"\;", ";");
         }
     }
 }
