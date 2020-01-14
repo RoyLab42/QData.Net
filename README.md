@@ -6,7 +6,7 @@ For the origin of QDataLite.Net, please refer to this [blog post](https://blog.r
 
 ## Introduction
 
-It used to be a nightmare when implementing MVC controllers for different kinds of data accesses. Take the `PersonModel` as an example, you may implement different kinds of services to satisfy different user requirements such as:
+It used to be a nightmare when implementing MVC controllers for different kinds of data access requirements. Take the `PersonModel` as an example, you may implement different kinds of services such as:
 
 ```csharp
 [HttpGet("/genderis/{gender}")]
@@ -19,9 +19,17 @@ public async Task<IActionResult> GetPersonsYoungerThan([FromRoute] int age){}
 public async Task<IActionResult> GetPersonsOlderThan([FromRoute] int age){}
 ```
 
-Luckily, with the help of the QDataLite.Net library, you can make the server-side MVC controller extremely simpler. It is possible to achieve requirements in only one method, and there are more benefits.
+Luckily, with the help of the QDataLite.Net library, you can make the server-side MVC controller extremely simpler. It is possible to achieve different requirements in only one method, and there are more benefits.
 
 ## Get Started
+
+### Add Reference
+
+The package was published at nuget gallery: https://www.nuget.org/packages/RoyLab.QData.Lite/
+
+```
+dotnet add package RoyLab.QData.Lite --version 1.1.5
+```
 
 ### Data Query
 
@@ -51,7 +59,7 @@ public IActionResult Query([FromQuery] string selector, [FromQuery] string filte
 }
 ```
 
-This service enables the client-side more flexibility on any data query they want.
+This service enables the client-side flexibility on any kind of data query.
 
 - `selector` is a list of property names separated by commas (,)
 - `filter` is a query expression in the form of [Polish Notation](https://en.wikipedia.org/wiki/Polish_notation)
