@@ -1,7 +1,7 @@
+﻿using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Text.Json;
-using NUnit.Framework;
 
 namespace RoyLab.QData
 {
@@ -122,10 +122,85 @@ namespace RoyLab.QData
         }
 
         [Test]
+        public void TestSelectorAndFilterAndOrderByAndSkip()
+        {
+            var resultSet = users.AsQueryable()
+                .QueryDynamic("Name,Location,Age", "Location in [1,2]", "+Age,-Name", 1)
+                .OfType<object>();
+            Assert.AreEqual(
+                @"[{""Age"":18,""Location"":1,""Name"":""Bob""},{""Age"":24,""Location"":2,""Name"":""Roy""},{""Age"":30,""Location"":1,""Name"":""Jack""}]",
+                JsonSerializer.Serialize(resultSet));
+
+            users = new[]
+            {
+                new User {Name = "Alice", Age = 10, Location = Location.SanFrancisco},
+                new User {Name = "Bob", Age = 10, Location = Location.NewYork},
+                new User {Name = "Roy", Age = 10, Location = Location.SanFrancisco},
+                new User {Name = "Jack", Age = 10, Location = Location.NewYork}
+            };
+            resultSet = users.AsQueryable()
+                .QueryDynamic("Name,Location,Age", "Location in [1,2]", "+Age,-Name", 4)
+                .OfType<object>();
+            Assert.AreEqual(
+                @"[]",
+                JsonSerializer.Serialize(resultSet));
+        }
+
+
+        [Test]
+        public void TestSelectorAndFilterAndOrderByAndTake()
+        {
+            var resultSet = users.AsQueryable()
+                .QueryDynamic("Name,Location,Age", "Location in [1,2]", "+Age,-Name", null, 1)
+                .OfType<object>();
+            Assert.AreEqual(
+                @"[{""Age"":10,""Location"":2,""Name"":""Alice""}]",
+                JsonSerializer.Serialize(resultSet));
+
+            users = new[]
+            {
+                new User {Name = "Alice", Age = 10, Location = Location.SanFrancisco},
+                new User {Name = "Bob", Age = 10, Location = Location.NewYork},
+                new User {Name = "Roy", Age = 10, Location = Location.SanFrancisco},
+                new User {Name = "Jack", Age = 10, Location = Location.NewYork}
+            };
+            resultSet = users.AsQueryable()
+                .QueryDynamic("Name,Location,Age", "Location in [1,2]", "+Age,-Name", null, 4)
+                .OfType<object>();
+            Assert.AreEqual(
+                @"[{""Age"":10,""Location"":2,""Name"":""Roy""},{""Age"":10,""Location"":1,""Name"":""Jack""},{""Age"":10,""Location"":1,""Name"":""Bob""},{""Age"":10,""Location"":2,""Name"":""Alice""}]",
+                JsonSerializer.Serialize(resultSet));
+        }
+
+        [Test]
+        public void TestSelectorAndFilterAndOrderByAndSkipAndTake()
+        {
+            var resultSet = users.AsQueryable()
+                .QueryDynamic("Name,Location,Age", "Location in [1,2]", "+Age,-Name", 1, 2)
+                .OfType<object>();
+            Assert.AreEqual(
+                @"[{""Age"":18,""Location"":1,""Name"":""Bob""},{""Age"":24,""Location"":2,""Name"":""Roy""}]",
+                JsonSerializer.Serialize(resultSet));
+
+            users = new[]
+            {
+                new User {Name = "Alice", Age = 10, Location = Location.SanFrancisco},
+                new User {Name = "Bob", Age = 10, Location = Location.NewYork},
+                new User {Name = "Roy", Age = 10, Location = Location.SanFrancisco},
+                new User {Name = "Jack", Age = 10, Location = Location.NewYork}
+            };
+            resultSet = users.AsQueryable()
+                .QueryDynamic("Name,Location,Age", "Location in [1,2]", "+Age,-Name", 0, 0)
+                .OfType<object>();
+            Assert.AreEqual(
+                @"[]",
+                JsonSerializer.Serialize(resultSet));
+        }
+        [Test]
         public void TestUpdater()
         {
             // test the public api
-            var user = new User {Name = "xxx"};
+            var user = new User { Name = "xxx" };
             var success = Utility.TryUpdateDynamic(user, "Age=18;Name=Roy;XXX=12;Location=2");
             Assert.IsTrue(success);
             Assert.AreEqual(18, user.Age);
