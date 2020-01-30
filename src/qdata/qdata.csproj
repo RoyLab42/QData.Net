@@ -7,7 +7,7 @@
 
     <!--  NuGet package version  -->
     <PackageId>RoyLab.QData.Lite</PackageId>
-    <PackageVersion>1.1.6</PackageVersion>
+    <PackageVersion>1.1.7</PackageVersion>
     <Authors>RoyLab</Authors>
     <Description>QData.Net is a DotNet library that makes the data query more flexible.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -15,7 +15,7 @@
     <!--  source related to this package  -->
     <RepositoryUrl>https://github.com/RoyLab42/QData.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryCommit>38ceeb1ee354196412d4e890b245ada982db43e2</RepositoryCommit>
+    <RepositoryCommit>234209e6cc338fb825c781ce4ea602652327959e</RepositoryCommit>
   </PropertyGroup>
 
   <ItemGroup>

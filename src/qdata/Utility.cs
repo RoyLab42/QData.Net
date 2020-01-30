@@ -47,7 +47,7 @@ namespace RoyLab.QData
                 if (selectorExpression != null)
                 {
                     source = source.Provider.CreateQuery(Expression.Call(typeof(Queryable), "Select",
-                        new[] { source.ElementType, outputType },
+                        new[] {source.ElementType, outputType},
                         source.Expression, selectorExpression));
                 }
             }
@@ -58,7 +58,7 @@ namespace RoyLab.QData
                 if (queryExpression != null)
                 {
                     source = source.Provider.CreateQuery(Expression.Call(typeof(Queryable), "Where",
-                        new[] { outputType },
+                        new[] {outputType},
                         source.Expression, queryExpression));
                 }
             }
@@ -80,11 +80,11 @@ namespace RoyLab.QData
                     {
                         '-' => Expression.Call(typeof(Queryable),
                             isFirstOrder ? "OrderByDescending" : "ThenByDescending",
-                            new[] { outputType, t },
+                            new[] {outputType, t},
                             source.Expression, Expression.Lambda(e, parameterExpression)),
                         '+' => Expression.Call(typeof(Queryable),
                             isFirstOrder ? "OrderBy" : "ThenBy",
-                            new[] { outputType, t },
+                            new[] {outputType, t},
                             source.Expression, Expression.Lambda(e, parameterExpression)),
                         _ => null
                     };
@@ -104,9 +104,9 @@ namespace RoyLab.QData
                 var method = typeof(Queryable).GetMethod("Skip").MakeGenericMethod(outputType);
 
                 source = source.Provider.CreateQuery(Expression.Call(
-                                       method,
-                                       source.Expression,
-                                       Expression.Constant(skip.Value)));
+                    method,
+                    source.Expression,
+                    Expression.Constant(skip.Value)));
             }
 
             if (take != null)
@@ -114,9 +114,9 @@ namespace RoyLab.QData
                 var method = typeof(Queryable).GetMethod("Take").MakeGenericMethod(outputType);
 
                 source = source.Provider.CreateQuery(Expression.Call(
-                                       method,
-                                       source.Expression,
-                                       Expression.Constant(take.Value)));
+                    method,
+                    source.Expression,
+                    Expression.Constant(take.Value)));
             }
 
             return source;
