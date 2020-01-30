@@ -28,7 +28,7 @@ Luckily, with the help of the QDataLite.Net library, you can make the server-sid
 The package was published at nuget gallery: https://www.nuget.org/packages/RoyLab.QData.Lite/
 
 ```
-dotnet add package RoyLab.QData.Lite --version 1.1.5
+dotnet add package RoyLab.QData.Lite
 ```
 
 ### Data Query
