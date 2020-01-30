@@ -73,11 +73,9 @@ namespace RoyLab.QData.Converters.ExpressionTrees
             }
 
             var valueArrayExpression = Expression.NewArrayInit(memberType,
-                inExpression.ValueList.Select(v => TypeUtility.Parse(Expression.Constant(v), memberType)));
+                inExpression.ValueList.Select(v => TypeUtility.TryParse(Expression.Constant(v), memberType)));
+            var containsMethod = MethodInfoUtility.EnumerableContainsGeneric.MakeGenericMethod(memberType);
 
-            var containsMethod = typeof(Enumerable).GetMethods()
-                .FirstOrDefault(mi => mi.Name == "Contains" && mi.GetParameters().Length == 2)
-                ?.MakeGenericMethod(memberType);
             return containsMethod == null
                 ? null
                 : Expression.Call(containsMethod, valueArrayExpression, memberExpression);
