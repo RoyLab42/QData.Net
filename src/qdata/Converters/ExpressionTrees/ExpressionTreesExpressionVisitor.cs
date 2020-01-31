@@ -1,8 +1,8 @@
-using System.Linq;
-using System.Linq.Expressions;
-using RoyLab.QData.Filter.Expressions;
+﻿using RoyLab.QData.Filter.Expressions;
 using RoyLab.QData.Interfaces;
 using RoyLab.QData.Updater.Expressions;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace RoyLab.QData.Converters.ExpressionTrees
 {
@@ -50,7 +50,7 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
-            var valueExpression = TypeUtility.Parse(Expression.Constant(compareExpression.Value), memberType);
+            var valueExpression = TypeUtility.TryParse(Expression.Constant(compareExpression.Value), memberType);
 
             return compareExpression.Operation switch
             {
