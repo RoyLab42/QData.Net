@@ -103,6 +103,18 @@ namespace RoyLab.QData.Filter
         }
 
         [Test]
+        public void TestInExpressionWithEmptySet()
+        {
+            var lambdaExpression = FilterParser.Parse("UserID in []").Build(typeof(User));
+            var function = lambdaExpression.Compile();
+            var filterFunction = function as Func<User, bool>;
+            Assert.IsNotNull(filterFunction);
+
+            Assert.IsFalse(filterFunction(new User {UserID = Guid.Parse("9b4959dc-45b4-45c7-8e6d-536bc770ace0")}));
+            Assert.IsTrue(filterFunction(new User()));
+        }
+
+        [Test]
         public void TestExpression2()
         {
             Expression<Func<User, bool>> expression = p => new[] {10, 20, 30}.Contains(p.Age);

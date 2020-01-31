@@ -1,12 +1,12 @@
+﻿using RoyLab.QData.Converters.ExpressionTrees;
+using RoyLab.QData.Filter;
+using RoyLab.QData.Selector;
+using RoyLab.QData.Updater;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using RoyLab.QData.Converters.ExpressionTrees;
-using RoyLab.QData.Filter;
-using RoyLab.QData.Selector;
-using RoyLab.QData.Updater;
 
 [assembly: InternalsVisibleTo("qdata.unittest")]
 
@@ -38,7 +38,7 @@ namespace RoyLab.QData
         /// <param name="orderBy"></param>
         /// <returns></returns>
         public static IQueryable QueryDynamic(this IQueryable source, string selector, string filter,
-            string orderBy = null)
+            string orderBy = null, int? skip = null, int? take = null)
         {
             var outputType = source.ElementType;
             if (selector != null)
@@ -97,6 +97,26 @@ namespace RoyLab.QData
                     isFirstOrder = false;
                     source = source.Provider.CreateQuery(orderByExpression);
                 }
+            }
+
+            if (skip != null)
+            {
+                var method = typeof(Queryable).GetMethod("Skip").MakeGenericMethod(outputType);
+
+                source = source.Provider.CreateQuery(Expression.Call(
+                    method,
+                    source.Expression,
+                    Expression.Constant(skip.Value)));
+            }
+
+            if (take != null)
+            {
+                var method = typeof(Queryable).GetMethod("Take").MakeGenericMethod(outputType);
+
+                source = source.Provider.CreateQuery(Expression.Call(
+                    method,
+                    source.Expression,
+                    Expression.Constant(take.Value)));
             }
 
             return source;

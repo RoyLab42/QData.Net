@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace RoyLab.QData.Converters.ExpressionTrees
 {
@@ -26,16 +25,9 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 realType = outputType.GetGenericArguments().First();
             }
 
-            MethodInfo parseMethod;
-            if (realType.IsEnum)
-            {
-                parseMethod = typeof(Enum).GetMethod("Parse", new[] {typeof(string)})
-                    ?.MakeGenericMethod(realType);
-            }
-            else
-            {
-                parseMethod = realType.GetMethod("Parse", new[] {typeof(string)});
-            }
+            var parseMethod = realType.IsEnum
+                ? MethodInfoUtility.EnumParseGeneric.MakeGenericMethod(realType)
+                : realType.GetMethod("Parse", new[] {typeof(string)});
 
             return parseMethod == null ? null : Expression.Call(parseMethod, inputExpression);
         }
@@ -53,17 +45,9 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 realType = outputType.GetGenericArguments().First();
             }
 
-            MethodInfo parseMethod;
-            if (realType.IsEnum)
-            {
-                parseMethod = typeof(Enum).GetMethod("TryParse",
-                        new[] {typeof(string), Type.MakeGenericMethodParameter(0).MakeByRefType()})
-                    ?.MakeGenericMethod(realType);
-            }
-            else
-            {
-                parseMethod = realType.GetMethod("TryParse", new[] {typeof(string), realType.MakeByRefType()});
-            }
+            var parseMethod = realType.IsEnum
+                ? MethodInfoUtility.EnumTryParseGeneric.MakeGenericMethod(realType)
+                : realType.GetMethod("TryParse", new[] {typeof(string), realType.MakeByRefType()});
 
             if (parseMethod == null)
             {
