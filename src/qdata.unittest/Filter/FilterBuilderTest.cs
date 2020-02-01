@@ -97,9 +97,17 @@ namespace RoyLab.QData.Filter
             var function = lambdaExpression.Compile();
             var filterFunction = function as Func<User, bool>;
             Assert.IsNotNull(filterFunction);
-
             Assert.IsTrue(filterFunction(new User {UserID = Guid.Parse("9b4959dc-45b4-45c7-8e6d-536bc770ace0")}));
             Assert.IsFalse(filterFunction(new User()));
+
+            lambdaExpression = FilterParser.Parse("Location in [NewYork,SanFrancisco]")
+                .Build(typeof(User));
+            function = lambdaExpression.Compile();
+            filterFunction = function as Func<User, bool>;
+            Assert.IsNotNull(filterFunction);
+            Assert.IsTrue(filterFunction(new User {Location = Location.NewYork}));
+            Assert.IsTrue(filterFunction(new User {Location = Location.SanFrancisco}));
+            Assert.IsFalse(filterFunction(new User {Location = Location.Tokyo}));
         }
 
         [Test]
@@ -109,9 +117,17 @@ namespace RoyLab.QData.Filter
             var function = lambdaExpression.Compile();
             var filterFunction = function as Func<User, bool>;
             Assert.IsNotNull(filterFunction);
-
             Assert.IsFalse(filterFunction(new User {UserID = Guid.Parse("9b4959dc-45b4-45c7-8e6d-536bc770ace0")}));
             Assert.IsTrue(filterFunction(new User()));
+
+            lambdaExpression = FilterParser.Parse("Location in []")
+                .Build(typeof(User));
+            function = lambdaExpression.Compile();
+            filterFunction = function as Func<User, bool>;
+            Assert.IsNotNull(filterFunction);
+            Assert.IsFalse(filterFunction(new User {Location = Location.NewYork}));
+            Assert.IsFalse(filterFunction(new User {Location = Location.SanFrancisco}));
+            Assert.IsFalse(filterFunction(new User {Location = Location.Tokyo}));
         }
 
         [Test]
