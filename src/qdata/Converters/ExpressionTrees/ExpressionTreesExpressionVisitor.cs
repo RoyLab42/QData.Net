@@ -50,7 +50,8 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
-            var valueExpression = TypeUtility.Parse(Expression.Constant(compareExpression.Value), memberType);
+            var value = TypeUtility.GetTryParseFunction(memberType).DynamicInvoke(compareExpression.Value);
+            var valueExpression = Expression.Constant(value, memberType);
 
             return compareExpression.Operation switch
             {
@@ -72,8 +73,11 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
+            var values = inExpression.ValueList
+                .Select(v => TypeUtility.GetTryParseFunction(memberType).DynamicInvoke(v))
+                .Where(v => v != null);
             var valueArrayExpression = Expression.NewArrayInit(memberType,
-                inExpression.ValueList.Select(v => TypeUtility.TryParse(Expression.Constant(v), memberType)));
+                values.Select(v => Expression.Constant(v, memberType)));
             var containsMethod = MethodInfoUtility.EnumerableContainsGeneric.MakeGenericMethod(memberType);
 
             return containsMethod == null
