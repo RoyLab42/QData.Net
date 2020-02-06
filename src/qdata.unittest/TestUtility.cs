@@ -14,10 +14,10 @@ namespace RoyLab.QData
         {
             users = new[]
             {
-                new User {Name = "Alice", Age = 10, Location = Location.SanFrancisco, ParentalDay = DateTime.Now},
-                new User {Name = "Bob", Age = 18, Location = Location.NewYork},
-                new User {Name = "Roy", Age = 24, Location = Location.SanFrancisco, ParentalDay = DateTime.Now},
-                new User {Name = "Jack", Age = 30, Location = Location.NewYork}
+                new User {Name = "Alice", Age = 10, Location = Location.SanFrancisco, ParentalDay = DateTime.Now , Address = new Address() { City = "San Francisco" }},
+                new User {Name = "Bob", Age = 18, Location = Location.NewYork , Address = new Address() { City = "New York" }},
+                new User {Name = "Roy", Age = 24, Location = Location.SanFrancisco, ParentalDay = DateTime.Now , Address = new Address() { City = "San Francisco" }},
+                new User {Name = "Jack", Age = 30, Location = Location.NewYork, Address = new Address() { City = "New York" } }
             };
         }
 
@@ -25,6 +25,14 @@ namespace RoyLab.QData
         public void TestFilter()
         {
             var resultSet = users.AsQueryable()
+               .QueryDynamic(null, $"Address.City=New York")
+               .OfType<object>()
+               .ToList();
+            Assert.AreEqual(2, resultSet.Count);
+            Assert.AreSame(users[1], resultSet[0]);
+            Assert.AreSame(users[3], resultSet[1]);
+
+            resultSet = users.AsQueryable()
                 .QueryDynamic(null, $"ParentalDay<={DateTime.Now.AddDays(1)}")
                 .OfType<object>()
                 .ToList();
@@ -209,7 +217,7 @@ namespace RoyLab.QData
         public void TestUpdater()
         {
             // test the public api
-            var user = new User {Name = "xxx"};
+            var user = new User { Name = "xxx" };
             var success = Utility.TryUpdateDynamic(user, "Age=18;Name=Roy;XXX=12;Location=2");
             Assert.IsTrue(success);
             Assert.AreEqual(18, user.Age);
