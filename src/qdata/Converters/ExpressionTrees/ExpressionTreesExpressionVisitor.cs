@@ -73,8 +73,14 @@ namespace RoyLab.QData.Converters.ExpressionTrees
                 return null;
             }
 
+            var parserFunction = TypeUtility.GetTryParseFunction(memberType);
+            if (parserFunction == null)
+            {
+                return null;
+            }
+
             var values = inExpression.ValueList
-                .Select(v => TypeUtility.GetTryParseFunction(memberType).DynamicInvoke(v))
+                .Select(v => parserFunction.DynamicInvoke(v))
                 .Where(v => v != null);
             var valueArrayExpression = Expression.NewArrayInit(memberType,
                 values.Select(v => Expression.Constant(v, memberType)));
