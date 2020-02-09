@@ -9,9 +9,15 @@ namespace RoyLab.QData.ExpressionTrees
         [Test]
         public void TestBuildTryParse()
         {
-            var parser = TypeUtility.GetTryParseFunction(typeof(DateTime));
-            var dateTime = parser.DynamicInvoke($"{DateTime.Now}");
-            Console.WriteLine(dateTime);
+            DateTime.TryParse("2020-01-01 12:22:30", out var dateTime);
+            var dateTimeParser = TypeUtility.GetTryParseFunction(typeof(DateTime));
+            var parsedDateTime = dateTimeParser.DynamicInvoke($"{dateTime}");
+            Assert.AreEqual(dateTime, parsedDateTime);
+
+            var intParser = TypeUtility.GetTryParseFunction(typeof(int));
+            var parsedInt = intParser.DynamicInvoke("123");
+            Assert.IsNotNull(parsedInt);
+            Assert.AreEqual(123, parsedInt);
         }
     }
 }

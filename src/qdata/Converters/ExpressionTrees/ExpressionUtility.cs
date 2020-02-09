@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace RoyLab.QData.Converters.ExpressionTrees
 {
@@ -20,60 +19,30 @@ namespace RoyLab.QData.Converters.ExpressionTrees
         public static (Type, MemberExpression) AccessPropertyOrMember(this Expression parameterExpression,
             string variableName)
         {
-            Type memberType = null;
             MemberExpression memberExpression = null;
+            var memberType = parameterExpression.Type;
 
-            var variableNames = variableName.Split('.');
-            var baseType = parameterExpression.Type;
-
-            MemberInfo memberInfo = null;
-
-            foreach (var v in variableNames)
+            foreach (var name in variableName.Split('.'))
             {
-                var propertyInfo = baseType.GetProperty(v);
-
-                memberInfo = propertyInfo;
-
-                if (memberInfo != null)
+                var propertyInfo = memberType.GetProperty(name);
+                if (propertyInfo != null)
                 {
                     memberType = propertyInfo.PropertyType;
-
-                    if (memberExpression == null)
-                    {
-                        memberExpression = Expression.Property(parameterExpression, v);
-                    }
-                    else
-                    {
-                        memberExpression = Expression.Property(memberExpression, v);
-                    }
-
-                    baseType = memberType;
+                    memberExpression = Expression.Property(memberExpression ?? parameterExpression, name);
+                    continue;
                 }
-                else
+
+                var fieldInfo = memberType.GetField(name);
+                if (fieldInfo == null)
                 {
-                    var fieldInfo = baseType.GetField(v);
-
-                    memberInfo = fieldInfo;
-
-                    if (memberInfo != null)
-                    {
-                        memberType = fieldInfo.FieldType;
-
-                        if (memberExpression == null)
-                        {
-                            memberExpression = Expression.Field(parameterExpression, v);
-                        }
-                        else
-                        {
-                            memberExpression = Expression.Field(memberExpression, v);
-                        }
-
-                        baseType = memberType;
-                    }
+                    return (null, null);
                 }
+
+                memberType = fieldInfo.FieldType;
+                memberExpression = Expression.Field(memberExpression ?? parameterExpression, name);
             }
 
-            return memberInfo == null ? (null, null) : (memberType, memberExpression);
+            return (memberType, memberExpression);
         }
     }
 }
